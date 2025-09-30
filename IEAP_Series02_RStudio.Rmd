@@ -312,6 +312,42 @@ legend("topright", legend = rownames(table_sex_tabac),
 >**Sentence result :**
 Throw two statistical test, we can conclude that there is a significant difference between sex on smoking, where women smoke less than men in our data set. We can confirm that this stereotype is true in this data set.
 
+>**General question : Are there any correlations between variables ?**
+
+```{r correlation matrix}
+# Select only numeric variables for correlation analysis
+numeric_vars <- snore[, sapply(snore, is.numeric)]
+# Calculate the correlation matrix
+cor_matrix <- cor(numeric_vars, use = "complete.obs")
+cor_matrix
+# Load necessary library for visualization
+library(corrplot)
+# Visualize the correlation matrix
+corrplot(cor_matrix, method = "circle", type = "upper",diag = FALSE,
+         tl.col = "black", tl.srt = 45,
+         title = "Correlation Matrix of Numeric Variables",
+         mar = c(0,0,1,0))
+```
+
+*In order to see if there are correlations between quantitative variable we can use a correlation matrix. The results of this matrix shows some interesting relations like a positive correlation between weight and height (0.68) and a negative correlation between age and alcool consumption (-0.24). However, we can't perform correlation matrices on categorial variables like sex, tobacco consumption or snoring status.To do so, we need to use a different method like we used previously with the Chi2 test to study the association strength and not the correlation.Let's perform the association between snore and sex because others catogorical associations has already been tested previously.*
+```{r Snore X Sex}
+# Table contingency
+tab_snore_sex <- table(snore$snore, snore$sex)
+print("Contingency Table: Snoring × Sex")
+print(tab_snore_sex)
+
+# Test Chi²
+chi_snore_sex <- chisq.test(tab_snore_sex)
+p_value_snore_sex <- chi_snore_sex$p.value
+print(paste("Chi² p-value =", round(p_value_snore_sex, 4)))
+
+```
+*On the three categorial variables, we performed three chi2 tests to study the possible associations between them : Tabac x Sex (p=0.00814), Snore x Sex (p=0.1156), Snore x Tabac (p=0.4066). Throw the p-values we can observed one significant association between Tabac and Sex with men being more likely to smoke than women in this sample.* 
+
+>**Final conclusion :**
+In order to answer the general question of whether there are correlations between variables, we first look at the quantitative data. We can observe a strong correlation between height and weight and a small negative correlation between age and alcohol consumption. On the categorical variable side, we can see associations between sex and tobacco comsumtpion and also between snorer and alcohol consumption. In a nutshell, the majority of the stereotypes discussed today are absent or do not exist in our dataset. 
+
+
 
 
 
