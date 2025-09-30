@@ -62,3 +62,40 @@ summary(prepost)
 
 *This table summarizes the variable present in the dataset PrePost.csv. The variable "HR rest" represents the heart rate at rest for cardiac patients, measured in beats per minute (bpm). Throw this rehabilitation training, we expect a decrease in resting heart rate, indicating improved cardiovascular fitness.*
 
+### 2.2.2 The analysis
+
+```{r test if normal distribution}
+# We separate the two groups
+rest.Pre  <- prepost$perf[prepost$time == "Before"]
+rest.Post <- prepost$perf[prepost$time == "After"]
+
+# Shapiro-Wilk normality test
+shapiro.test(rest.Pre)
+shapiro.test(rest.Post)
+```
+
+*The Shapiro-Wilk normality test results indicate that both groups have p-values more than 0.05, suggesting that the data follow a normal distribution. Therefore, we will use a parametric test to compare the two groups.*
+
+```{r paired t-test}
+# Paired t-test
+t_test_result <- t.test(rest.Pre, rest.Post, paired = TRUE)
+t_test_result
+```
+
+*The results of the paired t-test show a p-value less than 0.05, indicating a statistically significant difference between the heart rates before and after the rehabilitation training. This results suggests that the treatment has a significant effect on reducing resting heart rate in cardiac patients.*
+
+```{r boxplot}
+# Boxplot to visualize the effect of the treatment
+prepost$time <- factor(prepost$time, levels = c("Before", "After"))
+boxplot(perf ~ time, data = prepost, 
+        main = "Effect of Rehabilitation Training on cardiac patients HR",
+        xlab = "Time", ylab = "Resting Heart Rate (bpm)",
+        col = c("lightblue", "lightgreen"))
+```
+
+*The boxplot illustrates the effect of rehabilitation training on the resting heart rate of cardiac patients. We can observe an increase in the median HR after the treatment compared to before the treatment.*
+
+## Final result : 
+*The statistical analysis, supported by the boxplot, indicates that the rehabilitation training has a significant effect on resting heart rate in cardiac patients. Assuming that the goal of the rehabilitation training is to lower patients’ heart rate, we could conclude that the program had an effect between the before and after phases. However, this effect was in the opposite direction than expected, as an increase in heart rate was observed after the training.*
+
+
