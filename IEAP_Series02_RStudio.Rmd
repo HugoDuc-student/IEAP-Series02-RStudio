@@ -274,6 +274,45 @@ boxplot(weight ~ sex, data = snore,
 >**Sentence result :**
 Throw the Wilcoxon tests and illustrated by the boxplot, we can conclude that the men are not fatter than the women is this data set. The answer to the question "are men fatter ?" is false in our data set. 
 
+>**Do women smoke less ?**
+
+```{r table of contingency sex X tabac}
+#  Contingency table sex (H/F) × Tabac (Yes/No)
+table_sex_tabac <- table(snore$sex, snore$tabac)
+rownames(table_sex_tabac) <- c("Women", "Men")
+colnames(table_sex_tabac) <- c("Non-Smokers", "Smokers")
+print(table_sex_tabac)
+```
+```{r chi2 test for sex X tabac}
+chi2_sex_tabac <- chisq.test(table_sex_tabac)
+chi2_sex_tabac
+chi2_sex_tabac$expected
+
+```
+```{r test z for sex X tabac}
+# Test z for proportion
+prop.test(table_sex_tabac)
+result <- prop.test(table_sex_tabac)
+```
+
+*We wanted to test two different statistical test (Chi2 and z-test) in order to compare the results. Both of the test show us a significant difference (p<0.05) between sex for smoking where women smoke less than men. The samples estimate in the z-test quantify the difference: 60% of men smoke, whereas only 28% of women do. Let's illustrate this result with a barplot.*
+
+```{r barplot for sex X tabac}
+# Barplot for Sex × Tabac
+barplot(table_sex_tabac, beside = TRUE,
+        main = "Do women smoke less ?",
+        xlab = "Smoking Status", ylab = "Count",
+        col = c("lightgreen", "lightblue"), 
+        names.arg = colnames(table_sex_tabac))
+
+# Add legend
+legend("topright", legend = rownames(table_sex_tabac),
+       fill = c("lightgreen", "lightblue"))
+```
+>**Sentence result :**
+Throw two statistical test, we can conclude that there is a significant difference between sex on smoking, where women smoke less than men in our data set. We can confirm that this stereotype is true in this data set.
+
+
 
 
 
