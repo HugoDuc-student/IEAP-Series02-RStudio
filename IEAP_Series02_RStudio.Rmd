@@ -122,6 +122,42 @@ summary(snore)
 
 *This table describe the different variables of the data files in order to understand what we are going to analyse.* 
 
+### 2.3.2 The analysis
+ 
+>**Are snorers fatter ?**
+
+```{r test normality - snorers}
+# We separate the two groups
+snore_weight  <- snore$weight[snore$snore == "O"]
+non_snore_weight <- snore$weight[snore$snore == "N"]
+
+# Shapiro-Wilk normality test
+shapiro.test(snore_weight)
+shapiro.test(non_snore_weight)
+```
+
+*The normality test indicate that the distribution of the two groups studied is not normal (p-value < 0.05). Therefore, we have to use a non-parametric test to compare the two groups, the Wilcoxon test.*
+```{r statistical Wilcoxon test - snorers}
+# Wilcoxon test
+wilcox_test<- wilcox.test(snore_weight, non_snore_weight)
+wilcox_test
+```
+
+*The results of the Wilcoxon test show a p-value less than 0.05, indicating no significant difference in weight between snorers and non-snorers. However, it can be interesting to visualise the data throw a boxplot in order to observe trend or outliers.* 
+```{r boxplot snorers}
+# Boxplot to visualize the weight of snorers and non-snorers
+boxplot(weight ~ snore, data = snore, 
+        main = "Are snorers fatter ?",
+        xlab = "Snoring Status", ylab = "Weight (kg)",
+        col = c("lightblue", "lightgreen"),
+        names = c("Non-Snorers", "Snorers"))
+```
+
+*The boxplot illustrates the weight distribution of snorers and non-snorers. We can observe that the median weight of snorers is slightly higher than that of non-snorers but nothing really significant (like the statistical test demonstrate).*
+
+>**Sentence result :**
+Throw the Wilcoxon test and the boxplot, we can conclude that there is no significant difference in weight between snorers and non-snorers and that the stereotype "snorers are fatter" is not supported by the data.
+
 
 
 
