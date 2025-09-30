@@ -9,3 +9,56 @@ output:
     toc: false
     number_sections: false
 ---
+# 2 Statistical tests: comparison of medians (or means?)
+
+## 2.1 Make clear what is a statistical test, and when to use it.
+
+>**Question 1 : What is a median? A mean?**
+*"The median is the central value when all observations are sorted in order. If there is an odd number of observations then it is simply the middle value; if there is an even number of observations then it is the average of the middle" (Whitley & Ball, 2001). DOI: 10.1186/cc1455*
+
+>**Question 2 : What is a variance? A standard deviation?**
+*"The variance provides a quantitative measure of how closely the data set is spread around its center (Yang and al., 2018). DOI: 10.1177/2041669517747297"*
+
+>**Question 3 : What is a normal distribution?**
+*"A normal distribution, also called Gaussian distribution, has a symmetrical shape with the highest frequency at the center of the distribution and frequencies decreasing as values move away from the center" (Habibzadeh, 2024). DOI: 10.3346/jkms.2024.39.e35*
+
+>**Question 4 : What is a statistical test?**
+*"Statistical tests are mathematical tools for analyzing quantitative data generated in a research study" (Parab & Bhalerao, 2010). DOI : 10.4103/0974-7788.72494*
+
+>**Question 5 :When to use a statistical test?**
+*"In terms of selecting a statistical test, the most important question is “what is the main study hypothesis? If a scientific question is to be examined by comparing two or more groups, one can perform a statistical test"(Parab & Bhalerao, 2010). DOI : 10.4103/0974-7788.72494*
+
+>**Question 6 : What is a parametric test? A non-parametric test?**
+*"Parametric statistical procedures assume that the sample distribution is about the same shape (ie, normally distributed) and has the same parameters (ie, means and standard deviations) as the general population distribution.Nonparametric statistical procedures make no such assumptions about the shape or parameters of the population distribution"(Spine, 2018). DOI : 10.1177/2192568218782679*
+
+>**Question 7 : What are the assumptions of parametric tests?**
+*"The assumptions of parametric tests are: 1) normality , 2) Independance, 3) Homogeneity of variance, 4) Scale of measurement, 5) Absence of extreme outliers" (Moore and al.2019) DOI : 10.1186/s13040-019-0194-z*
+
+>**Question 8 : What are the assumptions of non-parametric tests?**
+*"The assumptions of non-parametric tests are : 1) Independance, 2) Ordinal continuous data, 3) Similar shapes of distributions, 4) Random sampling, 5) No strict assumption of normality or homogenity of variance"(Hopkins and al. 2018) DOI : 10.1177/2192568218782679*
+
+>**Question 9 : What is a p-value?**
+*"The P value means the probability, for a given statistical model that, when the null hypothesis is true, the statistical summary would be equal to or more extreme than the actual observed results"(Wasserstein & Lazar, 2016). DOI : 10.1080/00031305.2016.1154108*
+
+>**Question 10 : What is the risk of error when using a statistical test?**
+*"The risk of error when using a statistical test is the risk of concluding that a difference exists when in fact it does not (Type I error) or the risk of concluding that no difference exists when in fact it does (Type II error)"(Kim, 2015). DOI : 10.4097/kjae.2015.68.3.210*
+
+>**Question 11 : What is the difference between a paired and an unpaired test?**
+*"A paired test is a statistical test used when the observations in the two groups are dependent or related, such as repeated measurements on the same subjects. A non‑paired (independent) test is used when the observations in the two groups are independent, meaning the measurements in one group do not influence or correspond to the measurements in the other group" (Wag and al., 2022) DOI: 10.1111/rssb.12541*
+
+## 2.2 Effect of treatment over time
+
+### 2.2.1 The data
+Download the file PrePost.csv
+```{r load-data}
+prepost <- read.csv("data/test_data/PrePost.csv",header=TRUE)
+head(prepost)
+summary(prepost)
+```
+|Variable | Description | Unit | Possible values | Expected change |
+|---------|-------------|------|-----------------|-----------------|
+|HR rest   | Hear Rate at rest fo the cardiac patients  | beats per minute (bpm) | 60-100 bpm | Decrease in HR |
+
+
+*This table summarizes the variable present in the dataset PrePost.csv. The variable "HR rest" represents the heart rate at rest for cardiac patients, measured in beats per minute (bpm). Throw this rehabilitation training, we expect a decrease in resting heart rate, indicating improved cardiovascular fitness.*
+
