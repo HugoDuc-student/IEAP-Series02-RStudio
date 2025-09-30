@@ -239,6 +239,41 @@ barplot(c(mean_alcool_non_snorers, mean_alcool_snorers),
 >**Sentence result :**
 Throw the Chi-squared test and the barplots, we can conclude that there is no significant association between snoring and smoking status. However, throw the Wilcoxon test, we found a significant difference in alcohol consumption between snorers ans non-snorers where snores drinks more.
 
+>**Are men fatter ?**
+
+```{r normality test sex X weight}
+# We separate the two groups
+men_weight <- snore$weight[snore$sex =="H"]
+women_weight <- snore$weight[snore$sex =="F"]
+
+# Shapiro-Wilk normality test
+shapiro.test(men_weight)
+shapiro.test(women_weight)
+```
+
+*The normality test indicate that the distribution of the two groups studied is not normal (p-value < 0.05). Therefore, we have to use a non-parametric test to compare the two groups, the Wilcoxon test like in the first stereotype analysis.*
+
+```{r Wilcoxon test - sex X weight}
+wilcox_test<- wilcox.test(men_weight, women_weight)
+wilcox_test
+```
+
+*The Wilcoxon test reveal that there is no significant difference in weight between men and women (p-value > 0.05). However, it can be interesting to visualise the data throw a boxplot in order to observe trend or outliers.*
+
+```{r boxplot sex X weight}
+# Boxplot to visualize the weight according to sex 
+boxplot(weight ~ sex, data = snore, 
+        main = "Are men fatter ?",
+        xlab = "Sex", ylab = "Weight (kg)",
+        col = c("lightblue", "lightgreen"),
+        names = c("Women", "Men"))
+
+```
+
+*The box plot show us no significant difference between weight according to sex. However, we can see that there is more variability in the weight among men.*
+>**Sentence result :**
+Throw the Wilcoxon tests and illustrated by the boxplot, we can conclude that the men are not fatter than the women is this data set. The answer to the question "are men fatter ?" is false in our data set. 
+
 
 
 
