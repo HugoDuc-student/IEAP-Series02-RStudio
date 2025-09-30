@@ -158,6 +158,88 @@ boxplot(weight ~ snore, data = snore,
 >**Sentence result :**
 Throw the Wilcoxon test and the boxplot, we can conclude that there is no significant difference in weight between snorers and non-snorers and that the stereotype "snorers are fatter" is not supported by the data.
 
+>**Do snorers drink or smoke more ?**
+
+```{r table contingency}
+#  Contingency table Snore (Yes/No) × Tabac (Yes/No)
+table_snore_tabac <- table(snore$snore, snore$tabac)
+rownames(table_snore_tabac) <- c("Non-Snorers", "Snorers")
+colnames(table_snore_tabac) <- c("Non-Smokers", "Smokers")
+print(table_snore_tabac)
+
+# Contingency table Snore (Yes/No) × Alcool (Low/Medium/High) 
+snore$alcool_cat <- cut(snore$alcool,
+                        breaks = c(-1,0, 5, 10, Inf),
+                        labels = c("None","Low", "Medium", "High"))
+
+table_snore_alcool <- table(snore$snore, snore$alcool_cat)
+rownames(table_snore_alcool) <- c("Non-Snorers", "Snorers")
+colnames(table_snore_alcool) <- c("None","Low", "Medium", "High")
+print(table_snore_alcool)
+```
+
+*Although this contingency table is not a statistical test, it allows us to get an idea of what we are going to calculate*
+
+```{r chi2 test - snorers X tabac}
+# Chi-squared test for Snore × Tabac
+chi2_tabac <- chisq.test(table_snore_tabac)
+chi2_tabac
+chi2_tabac$expected
+```
+
+*The results of the Chi-squared test for the association between snoring and smoking status show a p-value greater than 0.05, indicating no significant association between the two variables.* 
+
+```{r normality distribution - snorers X alcool}
+# test the normality of the distribution of alcohol consumption in snorers and non-snorers
+shapiro.test(snore$alcool[snore$snore == "O"])
+shapiro.test(snore$alcool[snore$snore == "N"])
+```
+
+*The result of the normality test show a p-value <0.05 meaning that the distribution is not normal. We will proceed to a Wilcoxon test.*
+
+```{r wilcoxon test - snorers X alcool}
+# Wilcoxon test for Snore × Alcool
+wilcox_alcool <- wilcox.test(alcool ~ snore, data = snore)
+wilcox_alcool
+```
+*The results of the Wilcoxon test show a significant difference between snorers and non-snorers in terms of alcohol consumption (p-value < 0.05). However, in order to know which group consume more, we have to compare the mean of two groups in alcohol consumption.*
+
+```{r mean alcool consumption - snorers X alcool}
+# Mean alcohol consumption for Snorers and Non-Snorers
+mean_alcool_snorers <- mean(snore$alcool[snore$snore == "O"])
+mean_alcool_non_snorers <- mean(snore$alcool[snore$snore == "N"])
+mean_alcool_snorers
+mean_alcool_non_snorers
+```
+
+*The mean alcohol consumption for snorers is 4.02 liters, while for non-snorers it is 2.36 liters. This indicates that snorers consume more alcohol on average than non-snorers.*
+
+```{r barplot snorers X tabac and alcool}
+# Barplot for Snore × Tabac
+barplot(table_snore_tabac, beside = TRUE,
+        main = "Snoring Status vs Smoking Status",
+        xlab = "Smoking Status", ylab = "Count",
+        col = c("lightblue", "lightgreen"),
+        legend = rownames(table_snore_tabac))
+# Barplot for Snore × Alcool
+barplot(table_snore_alcool, beside = TRUE,
+        main = "Snoring Status vs Alcohol Consumption",
+        xlab = "Alcohol Consumption", ylab = "Count",
+        col = c("lightblue", "lightgreen"),
+        legend = rownames(table_snore_alcool))
+#Barplot for Snore X Alcool mean
+barplot(c(mean_alcool_non_snorers, mean_alcool_snorers),
+        names.arg = c("Non-Snorers", "Snorers"),
+        main = "Mean Alcohol Consumption by Snoring Status",
+        xlab = "Snoring Status", ylab = "Mean Alcohol Consumption (liters)",
+        col = c("lightblue", "lightgreen"))
+```
+
+*The different barplots illustrate the distribution of snoring status across different smoking statuses and alcohol consumption levels. The graphs supports the statistical results throw chi2 and Wilcoxon test.* 
+>**Sentence result :**
+Throw the Chi-squared test and the barplots, we can conclude that there is no significant association between snoring and smoking status. However, throw the Wilcoxon test, we found a significant difference in alcohol consumption between snorers ans non-snorers where snores drinks more.
+
+
 
 
 
