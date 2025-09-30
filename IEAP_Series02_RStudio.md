@@ -1,30 +1,26 @@
-# A minimal template for data analysis with RStudio
+# Title of the project: IEAP-Series 02-RStudio
 
-This is a minimal template for data analysis with RStudio, intended to researchers in human movement sciences that are new to RStudio.  
+# Author: Hugo Duchemin
 
-Cloning this template for each new data analysis problem should facilitate data analyses with RStudio and minimize potential errors.
+# Short description
+The goal of this project was to practice using R and GitHub by performing statistical analyses on different datasets. We analyzed the effect of rehabilitation training using statistical tests. Additionally, we performed analyses to answer questions related to social issues, such as stereotypes (e.g., are men heavier than women?), based on a dataset. This project allowed us to improve our skills in R and Git while applying statistical analysis to real-world questions.
 
-# Features 
-- A minimal RStudio project structure
-- A R Markdown notebook with a minimal data analysis pipeline
-- A `.gitignore` file to tell Git which files to share and not to share
+# Example of code used to answer different stereotypes
+- Test of normality (e.g., Shapiro-Wilk test)
+- Parametric or non-parametric statistical tests (e.g., t-test, Wilcoxon test)
+- Visualization of the results (e.g., boxplot)
+- Interpretation of the results (e.g., p-values)
 
-# Usage (without Git)
+# Requirements
+This project requires the following R packages: `dplyr`, `lsr`, and `vcd`. All of them were installed via the R console to perform the different analyses.
 
-- Download as a zip file (green button `< > Code` on the top right of the page)
-- Expand the archive on your computer (e.g., in your `Download` folder).
-- Rename the extracted folder with the name of your new project (e.g., `SeriesOO_analysis`).
-- Move the new `SeriesOO_analysis` folder where it should be located (e.g., in your `Documents/CodeProjects/` directory)
+# Time to complete the project
+Approximately 6 hours
 
+# Results summary
+- A significant association was found between snoring status and alcohol consumption.  
+- A significant association was found between sex and tobacco consumption, with women smoking less than men in our dataset.  
+- Rehabilitation training did not reduce heart rate as expected; instead, a small increase was observed in the post-training phase.
 
-# Usage (with Git)
-As this is a template repository, you can clone it to your computer and use it as a starting point for your new data analysis project.
-- Do exactly the same as above, plus... 
-- Use GitHub-Desktop to create a new Git repository from the folder you just created.
-  - Click on `File` > `New repository...` You will need to provide:
-    - The name of your new project (e.g., `ECG_analysis`).
-    - A short description of your project (e.g., `ECG analysis of 100 healthy individuals for my PhD`).
-    - The path to the folder you just created (e.g., `Documents/CodeProjects/ECG_analysis`).
-    - Choose None for the .gitignore file (this template already has a specific one).
-    - Choose None for the License file (this template already has a GNU GPLv3 License).
-
+# License
+This project is licensed under the GNU General Public License v3.0 – see the [LICENSE](LICENSE) file for details.
