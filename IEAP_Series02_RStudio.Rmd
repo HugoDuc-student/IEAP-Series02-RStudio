@@ -98,4 +98,258 @@ boxplot(perf ~ time, data = prepost,
 ## Final result : 
 *The statistical analysis, supported by the boxplot, indicates that the rehabilitation training has a significant effect on resting heart rate in cardiac patients. Assuming that the goal of the rehabilitation training is to lower patients’ heart rate, we could conclude that the program had an effect between the before and after phases. However, this effect was in the opposite direction than expected, as an increase in heart rate was observed after the training.*
 
+## 2.3 Testing some stereotypes
+Humans have stereotypes, some of them are probably true, some others are probably false (Cundiff and al., 2013 ; Blum, 2004) 
+DOI 10.1007/s11218-013-9232-8
+DOI 10.1080/05568640409485143
+
+### 2.3.1 The data
+```{r import data snore.txt}
+snore <- read.table("data/test_data/snore.txt", header=TRUE)
+head(snore)
+summary(snore)
+```
+|Variable | Description | Unit | Values |
+|---------|-------------|------|-----------------|
+|Age   | Age of the patient  | years | 23-74 |
+|Weight   | Weight of the patient  | kg | 42-120 |
+|Height   | Height of the patient  | cm | 158-208|
+|Alcohol  | Alcohol consumption  | liters | 0-15 |
+|Sex   | Sex of the patient  | H/F | ' |
+|Snore   | Snoring status  | Oui(O)/Non(N) | ' |
+|Tobacco   | Smoking status  | Oui(O)/Non(N) | ' |
+
+
+*This table describe the different variables of the data files in order to understand what we are going to analyse.* 
+
+### 2.3.2 The analysis
+ 
+>**Are snorers fatter ?**
+
+```{r test normality - snorers}
+# We separate the two groups
+snore_weight  <- snore$weight[snore$snore == "O"]
+non_snore_weight <- snore$weight[snore$snore == "N"]
+
+# Shapiro-Wilk normality test
+shapiro.test(snore_weight)
+shapiro.test(non_snore_weight)
+```
+
+*The normality test indicate that the distribution of the two groups studied is not normal (p-value < 0.05). Therefore, we have to use a non-parametric test to compare the two groups, the Wilcoxon test.*
+```{r statistical Wilcoxon test - snorers}
+# Wilcoxon test
+wilcox_test<- wilcox.test(snore_weight, non_snore_weight)
+wilcox_test
+```
+
+*The results of the Wilcoxon test show a p-value less than 0.05, indicating no significant difference in weight between snorers and non-snorers. However, it can be interesting to visualise the data throw a boxplot in order to observe trend or outliers.* 
+```{r boxplot snorers}
+# Boxplot to visualize the weight of snorers and non-snorers
+boxplot(weight ~ snore, data = snore, 
+        main = "Are snorers fatter ?",
+        xlab = "Snoring Status", ylab = "Weight (kg)",
+        col = c("lightblue", "lightgreen"),
+        names = c("Non-Snorers", "Snorers"))
+```
+
+*The boxplot illustrates the weight distribution of snorers and non-snorers. We can observe that the median weight of snorers is slightly higher than that of non-snorers but nothing really significant (like the statistical test demonstrate).*
+
+>**Sentence result :**
+Throw the Wilcoxon test and the boxplot, we can conclude that there is no significant difference in weight between snorers and non-snorers and that the stereotype "snorers are fatter" is not supported by the data.
+
+>**Do snorers drink or smoke more ?**
+
+```{r table contingency}
+#  Contingency table Snore (Yes/No) × Tabac (Yes/No)
+table_snore_tabac <- table(snore$snore, snore$tabac)
+rownames(table_snore_tabac) <- c("Non-Snorers", "Snorers")
+colnames(table_snore_tabac) <- c("Non-Smokers", "Smokers")
+print(table_snore_tabac)
+
+# Contingency table Snore (Yes/No) × Alcool (Low/Medium/High) 
+snore$alcool_cat <- cut(snore$alcool,
+                        breaks = c(-1,0, 5, 10, Inf),
+                        labels = c("None","Low", "Medium", "High"))
+
+table_snore_alcool <- table(snore$snore, snore$alcool_cat)
+rownames(table_snore_alcool) <- c("Non-Snorers", "Snorers")
+colnames(table_snore_alcool) <- c("None","Low", "Medium", "High")
+print(table_snore_alcool)
+```
+
+*Although this contingency table is not a statistical test, it allows us to get an idea of what we are going to calculate*
+
+```{r chi2 test - snorers X tabac}
+# Chi-squared test for Snore × Tabac
+chi2_tabac <- chisq.test(table_snore_tabac)
+chi2_tabac
+chi2_tabac$expected
+```
+
+*The results of the Chi-squared test for the association between snoring and smoking status show a p-value greater than 0.05, indicating no significant association between the two variables.* 
+
+```{r normality distribution - snorers X alcool}
+# test the normality of the distribution of alcohol consumption in snorers and non-snorers
+shapiro.test(snore$alcool[snore$snore == "O"])
+shapiro.test(snore$alcool[snore$snore == "N"])
+```
+
+*The result of the normality test show a p-value <0.05 meaning that the distribution is not normal. We will proceed to a Wilcoxon test.*
+
+```{r wilcoxon test - snorers X alcool}
+# Wilcoxon test for Snore × Alcool
+wilcox_alcool <- wilcox.test(alcool ~ snore, data = snore)
+wilcox_alcool
+```
+*The results of the Wilcoxon test show a significant difference between snorers and non-snorers in terms of alcohol consumption (p-value < 0.05). However, in order to know which group consume more, we have to compare the mean of two groups in alcohol consumption.*
+
+```{r mean alcool consumption - snorers X alcool}
+# Mean alcohol consumption for Snorers and Non-Snorers
+mean_alcool_snorers <- mean(snore$alcool[snore$snore == "O"])
+mean_alcool_non_snorers <- mean(snore$alcool[snore$snore == "N"])
+mean_alcool_snorers
+mean_alcool_non_snorers
+```
+
+*The mean alcohol consumption for snorers is 4.02 liters, while for non-snorers it is 2.36 liters. This indicates that snorers consume more alcohol on average than non-snorers.*
+
+```{r barplot snorers X tabac and alcool}
+# Barplot for Snore × Tabac
+barplot(table_snore_tabac, beside = TRUE,
+        main = "Snoring Status vs Smoking Status",
+        xlab = "Smoking Status", ylab = "Count",
+        col = c("lightblue", "lightgreen"),
+        legend = rownames(table_snore_tabac))
+# Barplot for Snore × Alcool
+barplot(table_snore_alcool, beside = TRUE,
+        main = "Snoring Status vs Alcohol Consumption",
+        xlab = "Alcohol Consumption", ylab = "Count",
+        col = c("lightblue", "lightgreen"),
+        legend = rownames(table_snore_alcool))
+#Barplot for Snore X Alcool mean
+barplot(c(mean_alcool_non_snorers, mean_alcool_snorers),
+        names.arg = c("Non-Snorers", "Snorers"),
+        main = "Mean Alcohol Consumption by Snoring Status",
+        xlab = "Snoring Status", ylab = "Mean Alcohol Consumption (liters)",
+        col = c("lightblue", "lightgreen"))
+```
+
+*The different barplots illustrate the distribution of snoring status across different smoking statuses and alcohol consumption levels. The graphs supports the statistical results throw chi2 and Wilcoxon test.* 
+>**Sentence result :**
+Throw the Chi-squared test and the barplots, we can conclude that there is no significant association between snoring and smoking status. However, throw the Wilcoxon test, we found a significant difference in alcohol consumption between snorers ans non-snorers where snores drinks more.
+
+>**Are men fatter ?**
+
+```{r normality test sex X weight}
+# We separate the two groups
+men_weight <- snore$weight[snore$sex =="H"]
+women_weight <- snore$weight[snore$sex =="F"]
+
+# Shapiro-Wilk normality test
+shapiro.test(men_weight)
+shapiro.test(women_weight)
+```
+
+*The normality test indicate that the distribution of the two groups studied is not normal (p-value < 0.05). Therefore, we have to use a non-parametric test to compare the two groups, the Wilcoxon test like in the first stereotype analysis.*
+
+```{r Wilcoxon test - sex X weight}
+wilcox_test<- wilcox.test(men_weight, women_weight)
+wilcox_test
+```
+
+*The Wilcoxon test reveal that there is no significant difference in weight between men and women (p-value > 0.05). However, it can be interesting to visualise the data throw a boxplot in order to observe trend or outliers.*
+
+```{r boxplot sex X weight}
+# Boxplot to visualize the weight according to sex 
+boxplot(weight ~ sex, data = snore, 
+        main = "Are men fatter ?",
+        xlab = "Sex", ylab = "Weight (kg)",
+        col = c("lightblue", "lightgreen"),
+        names = c("Women", "Men"))
+
+```
+
+*The box plot show us no significant difference between weight according to sex. However, we can see that there is more variability in the weight among men.*
+>**Sentence result :**
+Throw the Wilcoxon tests and illustrated by the boxplot, we can conclude that the men are not fatter than the women is this data set. The answer to the question "are men fatter ?" is false in our data set. 
+
+>**Do women smoke less ?**
+
+```{r table of contingency sex X tabac}
+#  Contingency table sex (H/F) × Tabac (Yes/No)
+table_sex_tabac <- table(snore$sex, snore$tabac)
+rownames(table_sex_tabac) <- c("Women", "Men")
+colnames(table_sex_tabac) <- c("Non-Smokers", "Smokers")
+print(table_sex_tabac)
+```
+```{r chi2 test for sex X tabac}
+chi2_sex_tabac <- chisq.test(table_sex_tabac)
+chi2_sex_tabac
+chi2_sex_tabac$expected
+
+```
+```{r test z for sex X tabac}
+# Test z for proportion
+prop.test(table_sex_tabac)
+result <- prop.test(table_sex_tabac)
+```
+
+*We wanted to test two different statistical test (Chi2 and z-test) in order to compare the results. Both of the test show us a significant difference (p<0.05) between sex for smoking where women smoke less than men. The samples estimate in the z-test quantify the difference: 60% of men smoke, whereas only 28% of women do. Let's illustrate this result with a barplot.*
+
+```{r barplot for sex X tabac}
+# Barplot for Sex × Tabac
+barplot(table_sex_tabac, beside = TRUE,
+        main = "Do women smoke less ?",
+        xlab = "Smoking Status", ylab = "Count",
+        col = c("lightgreen", "lightblue"), 
+        names.arg = colnames(table_sex_tabac))
+
+# Add legend
+legend("topright", legend = rownames(table_sex_tabac),
+       fill = c("lightgreen", "lightblue"))
+```
+>**Sentence result :**
+Throw two statistical test, we can conclude that there is a significant difference between sex on smoking, where women smoke less than men in our data set. We can confirm that this stereotype is true in this data set.
+
+>**General question : Are there any correlations between variables ?**
+
+```{r correlation matrix}
+# Select only numeric variables for correlation analysis
+numeric_vars <- snore[, sapply(snore, is.numeric)]
+# Calculate the correlation matrix
+cor_matrix <- cor(numeric_vars, use = "complete.obs")
+cor_matrix
+# Load necessary library for visualization
+library(corrplot)
+# Visualize the correlation matrix
+corrplot(cor_matrix, method = "circle", type = "upper",diag = FALSE,
+         tl.col = "black", tl.srt = 45,
+         title = "Correlation Matrix of Numeric Variables",
+         mar = c(0,0,1,0))
+```
+
+*In order to see if there are correlations between quantitative variable we can use a correlation matrix. The results of this matrix shows some interesting relations like a positive correlation between weight and height (0.68) and a negative correlation between age and alcool consumption (-0.24). However, we can't perform correlation matrices on categorial variables like sex, tobacco consumption or snoring status.To do so, we need to use a different method like we used previously with the Chi2 test to study the association strength and not the correlation.Let's perform the association between snore and sex because others catogorical associations has already been tested previously.*
+```{r Snore X Sex}
+# Table contingency
+tab_snore_sex <- table(snore$snore, snore$sex)
+print("Contingency Table: Snoring × Sex")
+print(tab_snore_sex)
+
+# Test Chi²
+chi_snore_sex <- chisq.test(tab_snore_sex)
+p_value_snore_sex <- chi_snore_sex$p.value
+print(paste("Chi² p-value =", round(p_value_snore_sex, 4)))
+
+```
+*On the three categorial variables, we performed three chi2 tests to study the possible associations between them : Tabac x Sex (p=0.00814), Snore x Sex (p=0.1156), Snore x Tabac (p=0.4066). Throw the p-values we can observed one significant association between Tabac and Sex with men being more likely to smoke than women in this sample.* 
+
+>**Final conclusion :**
+In order to answer the general question of whether there are correlations between variables, we first look at the quantitative data. We can observe a strong correlation between height and weight and a small negative correlation between age and alcohol consumption. On the categorical variable side, we can see associations between sex and tobacco comsumtpion and also between snorer and alcohol consumption. In a nutshell, the majority of the stereotypes discussed today are absent or do not exist in our dataset. 
+
+
+
+
+
+
 
