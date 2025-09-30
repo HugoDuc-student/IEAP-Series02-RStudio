@@ -103,6 +103,25 @@ Humans have stereotypes, some of them are probably true, some others are probabl
 DOI 10.1007/s11218-013-9232-8
 DOI 10.1080/05568640409485143
 
+### 2.3.1 The data
+```{r import data snore.txt}
+snore <- read.table("data/test_data/snore.txt", header=TRUE)
+head(snore)
+summary(snore)
+```
+|Variable | Description | Unit | Values |
+|---------|-------------|------|-----------------|
+|Age   | Age of the patient  | years | 23-74 |
+|Weight   | Weight of the patient  | kg | 42-120 |
+|Height   | Height of the patient  | cm | 158-208|
+|Alcohol  | Alcohol consumption  | liters | 0-15 |
+|Sex   | Sex of the patient  | H/F | ' |
+|Snore   | Snoring status  | Oui(O)/Non(N) | ' |
+|Tobacco   | Smoking status  | Oui(O)/Non(N) | ' |
+
+
+*This table describe the different variables of the data files in order to understand what we are going to analyse.* 
+
 
 
 
